@@ -18,3 +18,6 @@
 - 本地数据库SQLite3
 - 附件保存本地
 
+```
+cargo tauri dev
+```
