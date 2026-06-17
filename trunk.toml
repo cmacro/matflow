@@ -1,0 +1,7 @@
+[build]
+target = "index.html"
+
+[build.scripts]
+# 这里的脚本会在 trunk build 之前运行
+# 确保安装了 tailwindcss
+pre_build = "npx tailwindcss -i ./style.css -o ./style.css"
