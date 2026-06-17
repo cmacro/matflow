@@ -1,10 +1,9 @@
-使用 UI/UX Pro Max Skill 为我的 Tauri + Leptos
-
-生成现代仪表盘 UI Demo。
+使用 UI/UX Pro Max Skill 为我的 Tauri + Leptos 桌面应用生成一个现代仪表盘 UI Demo。
 
 需求：
 - 深色模式为主（Soft Dark / OLED 风格）
 - 左侧侧边栏导航 + 顶部栏
 - 主内容区显示数据卡片、图表
+- 使用 Tailwind + Leptos 组件风格
 - 强调专业、科技感、清晰的信息层级
 - 提供完整代码结构和组件拆分建议
