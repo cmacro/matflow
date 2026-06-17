@@ -63,7 +63,7 @@ STACK:
 tokio
 sqlx
 tauri2
-leptos
+vanilla
 
 ---
 

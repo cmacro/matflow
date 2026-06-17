@@ -15,6 +15,7 @@
 - 桌面软件，没有服务器
 - [Rust](https://rust-lang.org) 
 - [Tauri](https://v2.tauri.app/star)
+- UI template: Vanilla
 - 本地数据库SQLite3
 - 附件保存本地
 
