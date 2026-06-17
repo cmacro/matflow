@@ -10,16 +10,63 @@ pub enum Page {
 
 #[component]
 pub fn App() -> impl IntoView {
+    let current_page = create_signal(Page::Overview);
+
+    let on_nav_change = move |page: Page| {
+        current_page.1.set(page);
+    };
+
+    let render_page = create_memo(move |cx| {
+        let page = current_page.0.get_untracked(cx);
+        match page {
+            Page::Overview => view! { <OverviewPage/> }.into_view(),
+            Page::Purchase => view! { <PurchasePage/> }.into_view(),
+            Page::Master => view! { <MasterPage/> }.into_view(),
+            Page::Logistics => view! { <LogisticsPage/> }.into_view(),
+            Page::Summary => view! { <SummaryPage/> }.into_view(),
+        }
+    });
+
     view! {
         <div class="flex h-screen bg-slate-950 text-slate-50 font-sans overflow-hidden">
             <aside class="w-64 h-full border-r border-slate-800 bg-slate-950/50 flex flex-col">
                 <div class="p-6 text-xl font-bold tracking-tight text-green-500">"MATFLOW"</div>
                 <nav class="flex-1 px-4 space-y-2">
-                    <NavItem label="概览".to_string() icon_svg=get_dashboard_icon() active=true />
-                    <NavItem label="采购计划".to_string() icon_svg=get_cart_icon() active=false />
-                    <NavItem label="物料主库".to_string() icon_svg=get_inventory_icon() active=false />
-                    <NavItem label="入出库流水".to_string() icon_svg=get_analytics_icon() active=false />
-                    <NavItem label="库存汇总".to_string() icon_svg=get_settings_icon() active=false />
+                    <NavItem 
+                        label="概览".to_string() 
+                        icon_svg=get_dashboard_icon() 
+                        active=move |cx| current_page.0.get_untracked(cx) == Page::Overview
+                        on_click=on_nav_change 
+                        page=Page::Overview
+                    />
+                    <NavItem 
+                        label="采购计划".to_string() 
+                        icon_svg=get_cart_icon() 
+                        active=move |cx| current_page.0.get_untracked(cx) == Page::Purchase
+                        on_click=on_nav_change 
+                        page=Page::Purchase
+                    />
+                    <NavItem 
+                        label="物料主库".to_string() 
+                        icon_svg=get_inventory_icon() 
+                        active=move |cx| current_page.0.get_untracked(cx) == Page::Master
+                        on_click=on_nav_change 
+                        page=Page::Master
+                    />
+                    <NavItem 
+                        label="入出库流水".to_string() 
+                        icon_svg=get_analytics_icon() 
+                        active=move |cx| current_page.0.get_untracked(cx) == Page::Logistics
+                        on_click=on_nav_change 
+                        page=Page::Logistics
+                    />
+                    <NavItem 
+                        label="库存汇总".to_string() 
+                        icon_svg=get_settings_icon() 
+                        active=move |cx| current_page.0.get_untracked(cx) == Page::Summary
+                        on_click=on_nav_change 
+                        page=Page::Summary
+                    />
                 </nav>
                 <div class="p-4 border-t border-slate-800">
                     <div class="text-xs text-slate-500 px-3">"v1.0.0-beta"</div>
@@ -28,12 +75,7 @@ pub fn App() -> impl IntoView {
             <div class="flex-1 flex flex-col overflow-hidden">
                 <Topbar />
                 <main class="flex-1 overflow-y-auto p-8 space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <StatCard label="Total Stock" value="12,482" trend="+12%" trend_color="green" />
-                        <StatCard label="Inbound Today" value="428" trend="" trend_color="default" />
-                        <StatCard label="Pending Orders" value="15" trend="3 Urgent" trend_color="amber" />
-                        <StatCard label="System Health" value="99.9%" trend="Optimal" trend_color="green" />
-                    </div>
+                    {render_page}
                 </main>
             </div>
         </div>
@@ -61,14 +103,28 @@ fn get_settings_icon() -> &'static str {
 }
 
 #[component]
-pub fn NavItem(label: String, icon_svg: &'static str, active: bool) -> impl IntoView {
-    let style = if active {
-        "bg-slate-800 text-white shadow-sm"
-    } else {
-        "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+pub fn NavItem(
+    label: String,
+    icon_svg: &'static str,
+    active: impl Fn(Scope) -> bool + 'static,
+    on_click: impl Fn(Page) + 'static,
+    page: Page,
+) -> impl IntoView {
+    let style = {
+        let active_fn = active;
+        move |cx| {
+            if active_fn(cx) {
+                "bg-slate-800 text-white shadow-sm"
+            } else {
+                "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+            }
+        }
     };
     view! {
-        <div class=format!("flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer {}", style)>
+        <div 
+            class=format!("flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer {}", move || style(cx))
+            on:click=move |_| on_click(page.clone())
+        >
             <div class="flex items-center justify-center w-5 h-5">
                 <div inner_html=icon_svg />
             </div>
@@ -84,7 +140,10 @@ pub fn Topbar() -> impl IntoView {
             <div class="text-slate-400 text-sm font-medium">"MATFLOW Management System"</div>
             <div class="flex items-center gap-4">
                 <div class="relative">
-                    <input class="bg-slate-900 border border-slate-700 rounded-full px-4 py-1 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all w-64" placeholder="Search materials..." />
+                    <input 
+                        class="bg-slate-900 border border-slate-700 rounded-full px-4 py-1 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all w-64" 
+                        placeholder="Search materials..."
+                    />
                 </div>
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-600 border border-slate-700 cursor-pointer"></div>
             </div>
@@ -92,18 +151,3 @@ pub fn Topbar() -> impl IntoView {
     }
 }
 
-#[component]
-pub fn StatCard(label: &'static str, value: &'static str, trend: &'static str, trend_color: &'static str) -> impl IntoView {
-    let trend_class = match trend_color {
-        "green" => "text-green-500",
-        "amber" => "text-amber-500",
-        _ => "text-slate-500",
-    };
-    view! {
-        <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
-            <div class="text-slate-400 text-xs font-medium uppercase tracking-wider">{label}</div>
-            <div class="text-2xl font-bold mt-1 font-mono">{value}</div>
-            <div class=format!("text-xs mt-2 {}", if !trend.is_empty() { trend_class } else { "text-slate-500" })>{trend}</div>
-        </div>
-    }
-}

@@ -1,4 +1,5 @@
 mod app;
+mod pages;
 
 use app::*;
 use leptos::prelude::*;
