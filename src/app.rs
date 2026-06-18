@@ -14,9 +14,13 @@ struct PageRoute {
 pub enum Page {
     Overview,
     Purchase,
-    Master,
-    Logistics,
+    Inbound,
+    Outbound,
     Summary,
+    Master,
+    Report,
+    Settings,
+    System,
 }
 
 #[component]
@@ -26,9 +30,13 @@ pub fn App() -> impl IntoView {
     let routes = vec![
         PageRoute { page: Page::Overview, label: "首页", icon_svg: get_dashboard_icon() },
         PageRoute { page: Page::Purchase, label: "采购管理", icon_svg: get_cart_icon() },
-        PageRoute { page: Page::Master, label: "物料信息", icon_svg: get_inventory_icon() },
-        PageRoute { page: Page::Logistics, label: "入出库流水", icon_svg: get_analytics_icon() },
+        PageRoute { page: Page::Inbound, label: "入库流水", icon_svg: get_analytics_icon() },
+        PageRoute { page: Page::Outbound, label: "出库流水", icon_svg: get_analytics_icon() },
         PageRoute { page: Page::Summary, label: "库存记录", icon_svg: get_settings_icon() },
+        PageRoute { page: Page::Master, label: "物料信息", icon_svg: get_inventory_icon() },
+        PageRoute { page: Page::Report, label: "报表中心", icon_svg: get_analytics_icon() },
+        PageRoute { page: Page::Settings, label: "基础设置", icon_svg: get_settings_icon() },
+        PageRoute { page: Page::System, label: "系统管理", icon_svg: get_settings_icon() },
     ];
 
     let nav_configs = routes.iter().map(|r| NavConfig {
@@ -52,8 +60,12 @@ pub fn App() -> impl IntoView {
                             Page::Overview => { view! { <OverviewPage/> }.into_any() }
                             Page::Purchase => { view! { <PurchasePage/> }.into_any() }
                             Page::Master => { view! { <MasterPage/> }.into_any() }
-                            Page::Logistics => { view! { <LogisticsPage/> }.into_any() }
+                            Page::Inbound => { view! { <InboundPage/> }.into_any() }
+                            Page::Outbound => { view! { <OutboundPage/> }.into_any() }
                             Page::Summary => { view! { <SummaryPage/> }.into_any() }
+                            Page::Report => { view! { <ReportPage/> }.into_any() }
+                            Page::Settings => { view! { <SettingsPage/> }.into_any() }
+                            Page::System => { view! { <SystemPage/> }.into_any() }
                         }
                     }}
                 </main>

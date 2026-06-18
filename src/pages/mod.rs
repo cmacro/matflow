@@ -5,6 +5,9 @@ pub mod logistics;
 pub mod outbound;
 pub mod inbound;
 pub mod summary;
+pub mod report;
+pub mod settings;
+pub mod system;
 
 pub use overview::OverviewPage;
 pub use purchase::PurchasePage;
@@ -13,3 +16,6 @@ pub use logistics::LogisticsPage;
 pub use inbound::InboundPage; 
 pub use outbound::OutboundPage;
 pub use summary::SummaryPage;
+pub use report::ReportPage;
+pub use settings::SettingsPage;
+pub use system::SystemPage;
