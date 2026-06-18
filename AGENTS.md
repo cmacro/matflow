@@ -6,6 +6,7 @@
 - Rust / Tauri (v2)
 - SQLite3 (Local DB)
 - leptos 0.8
+- Tailwind CSS
 - Local file storage for attachments
 - Target: macOS, Windows
 
