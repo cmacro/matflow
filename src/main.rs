@@ -1,14 +1,10 @@
-mod app;
-mod pages;
-
-use app::*;
 use leptos::prelude::*;
 
+mod app;
+mod components;
+mod pages;
+mod utils;
+
 fn main() {
-    console_error_panic_hook::set_once();
-    mount_to_body(|| {
-        view! {
-            <App/>
-        }
-    })
+    mount_to_body(|| view! { <app::App/> });
 }

@@ -3,7 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn MasterPage() -> impl IntoView {
     // Mock data for material master database
-    let master_data = create_signal(vec![
+    let (master_data, _set_master_data) = signal(vec![
         MasterItem {
             id: 1,
             product_id: "MAT-001".to_string(),
@@ -84,14 +84,14 @@ pub fn MasterPage() -> impl IntoView {
                             master_data.with(|data| {
                                 data.iter().map(|item| {
                                     view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors">
-                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{&item.product_id}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.material_name}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.specification}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.category}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.unit}</td>
+                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
+                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{item.product_id.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.category.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
                                             <td class="py-3 px-4 text-sm text-slate-300">{item.minimum_stock}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.last_updated}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.last_updated.clone()}</td>
                                             <td class="py-3 px-4 text-center">
                                                 <div class="flex items-center justify-center gap-2">
                                                     <button class="text-slate-400 hover:text-green-400 transition-colors">

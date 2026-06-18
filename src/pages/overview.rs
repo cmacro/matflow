@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use crate::components::StatCard;
 
 #[component]
 pub fn OverviewPage() -> impl IntoView {
@@ -6,10 +7,30 @@ pub fn OverviewPage() -> impl IntoView {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
             <h2 class="text-xl font-semibold text-slate-200 mb-6">"系统概览"</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard label="Total Stock" value="12,482" trend="+12%" trend_color="green" />
-                <StatCard label="Inbound Today" value="428" trend="" trend_color="default" />
-                <StatCard label="Pending Orders" value="15" trend="3 Urgent" trend_color="amber" />
-                <StatCard label="System Health" value="99.9%" trend="Optimal" trend_color="green" />
+                <StatCard 
+                    label={"Total Stock".to_string()}  
+                    value={"12,482".to_string()} 
+                    trend={"+12%".to_string()} 
+                    trend_color={"green".to_string()} 
+                />
+                <StatCard 
+                    label={"Inbound Today".to_string()} 
+                    value={"428".to_string()} 
+                    trend={"".to_string()} 
+                    trend_color={"default".to_string()} 
+                />
+                <StatCard 
+                    label={"Pending Orders".to_string()} 
+                    value={"15".to_string()} 
+                    trend={"3 Urgent".to_string()} 
+                    trend_color={"amber".to_string()} 
+                />
+                <StatCard 
+                    label={"System Health".to_string()} 
+                    value={"99.9%".to_string()} 
+                    trend={"Optimal".to_string()} 
+                    trend_color={"green".to_string()} 
+                />
             </div>
             <div class="mt-8">
                 <h3 class="text-lg font-semibold text-slate-200 mb-4">"Quick Actions"</h3>
@@ -35,3 +56,4 @@ pub fn OverviewPage() -> impl IntoView {
         </div>
     }
 }
+

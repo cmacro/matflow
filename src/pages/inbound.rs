@@ -3,7 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn InboundPage() -> impl IntoView {
     // Mock data for inbound records
-    let inbound_data = create_signal(vec![
+    let (inbound_data, _set_inbound_data) = signal(vec![
         InboundItem {
             id: 1,
             product_id: "MAT-001".to_string(),
@@ -90,14 +90,14 @@ pub fn InboundPage() -> impl IntoView {
                             inbound_data.with(|data| {
                                 data.iter().map(|item| {
                                     view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors">
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.inbound_date}</td>
-                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{&item.product_id}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.material_name}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.specification}</td>
+                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.inbound_date.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{item.product_id.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
                                             <td class="py-3 px-4 text-sm text-green-400 text-right font-mono">{item.quantity}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.unit}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.operator}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.operator.clone()}</td>
                                             <td class="py-3 px-4 text-center">
                                                 <div class="flex items-center justify-center gap-2">
                                                     <button class="text-slate-400 hover:text-green-400 transition-colors">

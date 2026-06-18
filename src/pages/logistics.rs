@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use crate::pages::{InboundPage, OutboundPage};
 
 #[component]
 pub fn LogisticsPage() -> impl IntoView {

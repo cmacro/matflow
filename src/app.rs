@@ -1,5 +1,10 @@
+use crate::components::{NavItem, Topbar};
+use crate::pages::*;
 use leptos::prelude::*;
 
+use crate::utils::icons::*;
+
+#[derive(Clone, PartialEq)]
 pub enum Page {
     Overview,
     Purchase,
@@ -10,61 +15,46 @@ pub enum Page {
 
 #[component]
 pub fn App() -> impl IntoView {
-    let current_page = create_signal(Page::Overview);
-
-    let on_nav_change = move |page: Page| {
-        current_page.1.set(page);
-    };
-
-    let render_page = create_memo(move |cx| {
-        let page = current_page.0.get_untracked(cx);
-        match page {
-            Page::Overview => view! { <OverviewPage/> }.into_view(),
-            Page::Purchase => view! { <PurchasePage/> }.into_view(),
-            Page::Master => view! { <MasterPage/> }.into_view(),
-            Page::Logistics => view! { <LogisticsPage/> }.into_view(),
-            Page::Summary => view! { <SummaryPage/> }.into_view(),
-        }
-    });
+    let (current_page, set_current_page) = signal(Page::Overview);
 
     view! {
         <div class="flex h-screen bg-slate-950 text-slate-50 font-sans overflow-hidden">
             <aside class="w-64 h-full border-r border-slate-800 bg-slate-950/50 flex flex-col">
                 <div class="p-6 text-xl font-bold tracking-tight text-green-500">"MATFLOW"</div>
                 <nav class="flex-1 px-4 space-y-2">
-                    <NavItem 
-                        label="概览".to_string() 
-                        icon_svg=get_dashboard_icon() 
-                        active=move |cx| current_page.0.get_untracked(cx) == Page::Overview
-                        on_click=on_nav_change 
+                    <NavItem
+                        label={"概览".to_string()}
+                        icon_svg=get_dashboard_icon()
+                        active=move || current_page.get() == Page::Overview
+                        on_click=move |page| set_current_page.set(page)
                         page=Page::Overview
                     />
-                    <NavItem 
-                        label="采购计划".to_string() 
-                        icon_svg=get_cart_icon() 
-                        active=move |cx| current_page.0.get_untracked(cx) == Page::Purchase
-                        on_click=on_nav_change 
+                    <NavItem
+                        label={"采购计划".to_string()}
+                        icon_svg=get_cart_icon()
+                        active=move || current_page.get() == Page::Purchase
+                        on_click=move |page| set_current_page.set(page)
                         page=Page::Purchase
                     />
-                    <NavItem 
-                        label="物料主库".to_string() 
-                        icon_svg=get_inventory_icon() 
-                        active=move |cx| current_page.0.get_untracked(cx) == Page::Master
-                        on_click=on_nav_change 
+                    <NavItem
+                        label={"物料主库".to_string()}
+                        icon_svg=get_inventory_icon()
+                        active=move || current_page.get() == Page::Master
+                        on_click=move |page| set_current_page.set(page)
                         page=Page::Master
                     />
-                    <NavItem 
-                        label="入出库流水".to_string() 
-                        icon_svg=get_analytics_icon() 
-                        active=move |cx| current_page.0.get_untracked(cx) == Page::Logistics
-                        on_click=on_nav_change 
+                    <NavItem
+                        label={"入出库流水".to_string()}
+                        icon_svg=get_analytics_icon()
+                        active=move || current_page.get() == Page::Logistics
+                        on_click=move |page| set_current_page.set(page)
                         page=Page::Logistics
                     />
-                    <NavItem 
-                        label="库存汇总".to_string() 
-                        icon_svg=get_settings_icon() 
-                        active=move |cx| current_page.0.get_untracked(cx) == Page::Summary
-                        on_click=on_nav_change 
+                    <NavItem
+                        label={"库存汇总".to_string()}
+                        icon_svg=get_settings_icon()
+                        active=move || current_page.get() == Page::Summary
+                        on_click=move |page| set_current_page.set(page)
                         page=Page::Summary
                     />
                 </nav>
@@ -75,79 +65,17 @@ pub fn App() -> impl IntoView {
             <div class="flex-1 flex flex-col overflow-hidden">
                 <Topbar />
                 <main class="flex-1 overflow-y-auto p-8 space-y-8">
-                    {render_page}
+                    {move || {
+                        match current_page.get() {
+                            Page::Overview => { view! { <OverviewPage/> }.into_any() }
+                            Page::Purchase => { view! { <PurchasePage/> }.into_any() }
+                            Page::Master => { view! { <MasterPage/> }.into_any() }
+                            Page::Logistics => { view! { <LogisticsPage/> }.into_any() }
+                            Page::Summary => { view! { <SummaryPage/> }.into_any() }
+                        }
+                    }}
                 </main>
             </div>
         </div>
     }
 }
-
-fn get_dashboard_icon() -> &'static str {
-    r#"<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="13" rx="1"/><rect width="7" height="5" x="3" y="13" rx="1"/></svg>"#
-}
-
-fn get_inventory_icon() -> &'static str {
-    r#"<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8z"/><path d="M3 8V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3"/></svg>"#
-}
-
-fn get_cart_icon() -> &'static str {
-    r#"<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 12.09A25 25 0 0 1 22 12H2"/></svg>"#
-}
-
-fn get_analytics_icon() -> &'static str {
-    r#"<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 16-5-5-4 4-3-3"/></svg>"#
-}
-
-fn get_settings_icon() -> &'static str {
-    r#"<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v1.5"/><path d="M18 2a2 2 0 0 1 2 2v1.5"/><path d="M2 2a2 2 0 0 0-2 2v1.5"/><path d="M12 12h.01"/><path d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0z"/><path d="M12 18a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>"#
-}
-
-#[component]
-pub fn NavItem(
-    label: String,
-    icon_svg: &'static str,
-    active: impl Fn(Scope) -> bool + 'static,
-    on_click: impl Fn(Page) + 'static,
-    page: Page,
-) -> impl IntoView {
-    let style = {
-        let active_fn = active;
-        move |cx| {
-            if active_fn(cx) {
-                "bg-slate-800 text-white shadow-sm"
-            } else {
-                "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-            }
-        }
-    };
-    view! {
-        <div 
-            class=format!("flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer {}", move || style(cx))
-            on:click=move |_| on_click(page.clone())
-        >
-            <div class="flex items-center justify-center w-5 h-5">
-                <div inner_html=icon_svg />
-            </div>
-            <span class="text-sm font-medium">{label}</span>
-        </div>
-    }.into_view()
-}
-
-#[component]
-pub fn Topbar() -> impl IntoView {
-    view! {
-        <header class="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-950/20 backdrop-blur-sm">
-            <div class="text-slate-400 text-sm font-medium">"MATFLOW Management System"</div>
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <input 
-                        class="bg-slate-900 border border-slate-700 rounded-full px-4 py-1 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all w-64" 
-                        placeholder="Search materials..."
-                    />
-                </div>
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-600 border border-slate-700 cursor-pointer"></div>
-            </div>
-        </header>
-    }
-}
-

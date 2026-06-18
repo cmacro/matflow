@@ -5,6 +5,7 @@
 ## Tech Stack
 - Rust / Tauri (v2)
 - SQLite3 (Local DB)
+- leptos 0.8
 - Local file storage for attachments
 - Target: macOS, Windows
 

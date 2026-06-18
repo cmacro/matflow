@@ -3,7 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn SummaryPage() -> impl IntoView {
     // Mock data for inventory summary
-    let summary_data = create_signal(vec![
+    let (summary_data, _set_summary_data) = signal(vec![
         SummaryItem {
             id: 1,
             product_id: "MAT-001".to_string(),
@@ -83,7 +83,7 @@ pub fn SummaryPage() -> impl IntoView {
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-b border-slate-800">
+                        <tr class="border-b border-slate-800">&
                             <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Product ID"</th>
                             <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Material Name"</th>
                             <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Specification"</th>
@@ -108,19 +108,19 @@ pub fn SummaryPage() -> impl IntoView {
                                         "Normal"
                                     };
                                     
-                                    let status_class = match stock_status {
-                                        "Low Stock" => "text-red-400",
-                                        "Warning" => "text-amber-400",
-                                        _ => "text-green-400",
-                                    };
+                                    // let status_class = match stock_status {
+                                    //     "Low Stock" => "text-red-400",
+                                    //     "Warning" => "text-amber-400",
+                                    //     _ => "text-green-400",
+                                    // };
 
                                     view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors">
-                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{&item.product_id}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.material_name}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.specification}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{&item.category}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.unit}</td>
+                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
+                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{item.product_id.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-300">{item.category.clone()}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
                                             <td class="py-3 px-4 text-sm text-green-400 text-right font-mono">{item.total_inbound}</td>
                                             <td class="py-3 px-4 text-sm text-red-400 text-right font-mono">{item.total_outbound}</td>
                                             <td class="py-3 px-4 text-sm text-slate-200 text-right font-mono">{item.remaining}</td>
@@ -134,7 +134,7 @@ pub fn SummaryPage() -> impl IntoView {
                                                     }
                                                 )>{stock_status}</span>
                                             </td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{&item.last_updated}</td>
+                                            <td class="py-3 px-4 text-sm text-slate-400">{item.last_updated.clone()}</td>
                                         </tr>
                                     }
                                 }).collect::<Vec<_>>()
