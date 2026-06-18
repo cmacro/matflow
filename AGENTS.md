@@ -23,6 +23,9 @@ Core flow: Purchase Plan $\rightarrow$ Material Master Database $\rightarrow$ In
 - No source code is currently present in the root or `src` directory.
 - Refer to `docs/业务说明.md` for detailed functional requirements and data association logic.
 
+## 目录存放规则
+- 日志 /docs/logs
+
 ## 工作原则
 1. 先设计
 2. 后编码

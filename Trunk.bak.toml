@@ -1,6 +1,9 @@
 [build]
 target = "index.html"
 
+[serve]
+port = 5174
+
 [build.scripts]
 # 这里的脚本会在 trunk build 之前运行
 # 确保安装了 tailwindcss
