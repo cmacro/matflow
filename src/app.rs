@@ -28,28 +28,67 @@ pub fn App() -> impl IntoView {
     let (current_page, set_current_page) = signal(Page::Overview);
 
     let routes = vec![
-        PageRoute { page: Page::Overview, label: "首页", icon_svg: get_dashboard_icon() },
-        PageRoute { page: Page::Purchase, label: "采购管理", icon_svg: get_cart_icon() },
-        PageRoute { page: Page::Inbound, label: "入库流水", icon_svg: get_analytics_icon() },
-        PageRoute { page: Page::Outbound, label: "出库流水", icon_svg: get_analytics_icon() },
-        PageRoute { page: Page::Summary, label: "库存记录", icon_svg: get_settings_icon() },
-        PageRoute { page: Page::Master, label: "物料信息", icon_svg: get_inventory_icon() },
-        PageRoute { page: Page::Report, label: "报表中心", icon_svg: get_analytics_icon() },
-        PageRoute { page: Page::Settings, label: "基础设置", icon_svg: get_settings_icon() },
-        PageRoute { page: Page::System, label: "系统管理", icon_svg: get_settings_icon() },
+        PageRoute {
+            page: Page::Overview,
+            label: "首页",
+            icon_svg: get_dashboard_icon(),
+        },
+        PageRoute {
+            page: Page::Purchase,
+            label: "采购管理",
+            icon_svg: get_cart_icon(),
+        },
+        PageRoute {
+            page: Page::Inbound,
+            label: "入库流水",
+            icon_svg: get_analytics_icon(),
+        },
+        PageRoute {
+            page: Page::Outbound,
+            label: "出库流水",
+            icon_svg: get_analytics_icon(),
+        },
+        PageRoute {
+            page: Page::Summary,
+            label: "库存记录",
+            icon_svg: get_settings_icon(),
+        },
+        PageRoute {
+            page: Page::Master,
+            label: "物料信息",
+            icon_svg: get_inventory_icon(),
+        },
+        PageRoute {
+            page: Page::Report,
+            label: "报表中心",
+            icon_svg: get_analytics_icon(),
+        },
+        PageRoute {
+            page: Page::Settings,
+            label: "基础设置",
+            icon_svg: get_settings_icon(),
+        },
+        PageRoute {
+            page: Page::System,
+            label: "系统管理",
+            icon_svg: get_settings_icon(),
+        },
     ];
 
-    let nav_configs = routes.iter().map(|r| NavConfig {
-        page: r.page.clone(),
-        label: r.label,
-        icon_svg: r.icon_svg,
-    }).collect::<Vec<_>>();
+    let nav_configs = routes
+        .iter()
+        .map(|r| NavConfig {
+            page: r.page.clone(),
+            label: r.label,
+            icon_svg: r.icon_svg,
+        })
+        .collect::<Vec<_>>();
 
     view! {
         <div class="flex h-screen bg-slate-950 text-slate-50 font-sans overflow-hidden">
-            <Aside 
-                current_page=current_page 
-                set_current_page=set_current_page 
+            <Aside
+                current_page=current_page
+                set_current_page=set_current_page
                 nav_configs=nav_configs
             />
             <div class="flex-1 flex flex-col overflow-hidden">
