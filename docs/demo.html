@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>库存管理系统</title>
+  <link rel="stylesheet" href="./demo.css"/>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+<div class="flex h-screen">
+
+  <!-- 左侧菜单 -->
+  <aside class="w-64 bg-slate-900 text-white flex flex-col">
+    <div class="px-6 py-5 text-xl font-bold border-b border-slate-700">
+      📦 库存系统
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 text-sm">
+      <a class="block px-4 py-2 rounded bg-slate-800">首页</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">采购管理</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">入库流水</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">出库流水</a>
+      <a class="block px-4 py-2 rounded bg-blue-600">库存记录</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">物料信息</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">报表中心</a>
+      <a class="block px-4 py-2 rounded hover:bg-slate-800">系统设置</a>
+    </nav>
+  </aside>
+
+  <!-- 主体 -->
+  <main class="flex-1 p-6 overflow-auto">
+
+    <!-- 顶部栏 -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold">库存记录</h1>
+      <div class="text-sm text-gray-500">管理员</div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+
+      <div class="bg-white rounded-xl p-4 shadow">
+        <div class="text-sm text-gray-500">物料总数</div>
+        <div class="text-2xl font-bold mt-1">1,256</div>
+        <div class="text-green-500 text-xs mt-1">+25</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow">
+        <div class="text-sm text-gray-500">库存总数</div>
+        <div class="text-2xl font-bold mt-1">85,620</div>
+        <div class="text-green-500 text-xs mt-1">+320</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow">
+        <div class="text-sm text-gray-500">库存金额</div>
+        <div class="text-2xl font-bold mt-1">¥2,356,210</div>
+        <div class="text-green-500 text-xs mt-1">+12,600</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow">
+        <div class="text-sm text-gray-500">库存预警</div>
+        <div class="text-2xl font-bold mt-1">23</div>
+        <div class="text-red-500 text-xs mt-1">+5</div>
+      </div>
+
+    </div>
+
+    <!-- 搜索区域 -->
+    <div class="bg-white p-4 rounded-xl shadow mb-6 grid grid-cols-5 gap-3">
+
+      <input class="border rounded px-3 py-2 text-sm" placeholder="物料编码"/>
+      <input class="border rounded px-3 py-2 text-sm" placeholder="物料名称"/>
+
+      <select class="border rounded px-3 py-2 text-sm">
+        <option>物料分类</option>
+        <option>紧固件</option>
+        <option>机械件</option>
+      </select>
+
+      <select class="border rounded px-3 py-2 text-sm">
+        <option>状态</option>
+        <option>正常</option>
+        <option>预警</option>
+      </select>
+
+      <div class="flex gap-2">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm">查询</button>
+        <button class="bg-gray-200 px-4 py-2 rounded text-sm">重置</button>
+      </div>
+
+    </div>
+
+    <!-- 表格 -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+
+      <div class="flex justify-between items-center p-4 border-b">
+        <h2 class="font-semibold">库存列表</h2>
+        <div class="space-x-2">
+          <button class="text-sm px-3 py-1 border rounded">导出</button>
+          <button class="text-sm px-3 py-1 border rounded">刷新</button>
+        </div>
+      </div>
+
+      <table class="w-full text-sm">
+        <thead class="bg-gray-100 text-left">
+          <tr>
+            <th class="p-3">编码</th>
+            <th class="p-3">名称</th>
+            <th class="p-3">规格</th>
+            <th class="p-3">分类</th>
+            <th class="p-3">单位</th>
+            <th class="p-3">库存</th>
+            <th class="p-3">可用</th>
+            <th class="p-3">金额</th>
+            <th class="p-3">状态</th>
+            <th class="p-3">操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="border-t">
+            <td class="p-3">A001</td>
+            <td class="p-3">螺丝 M8*20</td>
+            <td class="p-3">M8*20</td>
+            <td class="p-3">紧固件</td>
+            <td class="p-3">个</td>
+            <td class="p-3">5000</td>
+            <td class="p-3">4850</td>
+            <td class="p-3">¥2,500</td>
+            <td class="p-3 text-green-600">正常</td>
+            <td class="p-3 text-blue-600">查看</td>
+          </tr>
+
+          <tr class="border-t">
+            <td class="p-3">B002</td>
+            <td class="p-3">齿轮 Z30</td>
+            <td class="p-3">Z30</td>
+            <td class="p-3">机械件</td>
+            <td class="p-3">个</td>
+            <td class="p-3">800</td>
+            <td class="p-3">780</td>
+            <td class="p-3">¥4,000</td>
+            <td class="p-3 text-yellow-600">预警</td>
+            <td class="p-3 text-blue-600">查看</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 分页 -->
+      <div class="flex justify-between items-center p-4 border-t text-sm">
+        <div>共 1,256 条</div>
+
+        <div class="flex gap-2">
+          <button class="px-3 py-1 border rounded">1</button>
+          <button class="px-3 py-1 border rounded bg-blue-600 text-white">2</button>
+          <button class="px-3 py-1 border rounded">3</button>
+          <button class="px-3 py-1 border rounded">...</button>
+          <button class="px-3 py-1 border rounded">126</button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

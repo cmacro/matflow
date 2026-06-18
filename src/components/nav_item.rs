@@ -5,9 +5,10 @@ use crate::app::Page;
 pub fn NavItem(
     label: String,
     icon_svg: &'static str,
-    #[prop(into)] active: Signal<bool>,        // ← 修改这里
+    #[prop(into)] active: Signal<bool>,
     on_click: impl Fn(Page) + 'static,
     page: Page,
+    #[prop(optional)] collapsed: Option<ReadSignal<bool>>,
 ) -> impl IntoView {
     view! {
         <div 
@@ -24,7 +25,12 @@ pub fn NavItem(
             <div class="flex items-center justify-center w-5 h-5">
                 <div inner_html=icon_svg></div>
             </div>
-            <span class="text-sm font-medium">{label}</span>
+            {move || if let Some(col) = collapsed {
+                if col.get() { view! { <span class="hidden">{label.clone()}</span> }.into_any() } 
+                else { view! { <span class="text-sm font-medium">{label.clone()}</span> }.into_any() }
+            } else {
+                view! { <span class="text-sm font-medium">{label.clone()}</span> }.into_any()
+            }}
         </div>
     }
 }
