@@ -1,139 +1,68 @@
+use crate::data::mock::MockStore;
 use leptos::prelude::*;
 
 #[component]
-pub fn OutboundPage() -> impl IntoView {
-    // Mock data for outbound records
-    let (outbound_data, _set_outbound_data) = signal(vec![
-        OutboundItem {
-            id: 1,
-            product_id: "MAT-001".to_string(),
-            material_name: "乳胶漆".to_string(),
-            specification: "10kg/桶".to_string(),
-            outbound_date: "2024-01-18".to_string(),
-            quantity: 5,
-            unit: "桶".to_string(),
-            operator: "张三".to_string(),
-            purpose: "客厅装修".to_string(),
-        },
-        OutboundItem {
-            id: 2,
-            product_id: "MAT-002".to_string(),
-            material_name: "地板".to_string(),
-            specification: "1200x120mm".to_string(),
-            outbound_date: "2024-01-20".to_string(),
-            quantity: 30,
-            unit: "平方米".to_string(),
-            operator: "李四".to_string(),
-            purpose: "卧室装修".to_string(),
-        },
-        OutboundItem {
-            id: 3,
-            product_id: "MAT-003".to_string(),
-            material_name: "瓷砖".to_string(),
-            specification: "600x600mm".to_string(),
-            outbound_date: "2024-01-22".to_string(),
-            quantity: 25,
-            unit: "平方米".to_string(),
-            operator: "王五".to_string(),
-            purpose: "厨房装修".to_string(),
-        },
-    ]);
+pub fn OutboundPage(store: MockStore) -> impl IntoView {
+    let outbound_logs = store.outbound;
 
     view! {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-200">"出库流水"</h2>
-                    <p class="text-sm text-slate-500">"Track material outbound records and warehouse dispatch"</p>
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-semibold text-slate-200">"出库流水记录"</h2>
+                    <p class="text-sm text-slate-500">"记录物料领用/安装情况 $\rightarrow$ 驱动库存减少"</p>
                 </div>
-                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    "Add Outbound"
-                </button>
+                <div class="flex gap-3">
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        "录入出库"
+                    </button>
+                </div>
             </div>
 
-            <div class="mb-4 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-3">
                 <div class="relative flex-1">
-                    <input 
-                        type="text" 
-                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                        placeholder="Search by Product ID, Material Name..."
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </span>
+                    <input
+                        type="text"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-all"
+                        placeholder="搜索日期、产品编号..."
                     />
                 </div>
-                <div class="relative">
-                    <input 
-                        type="date" 
-                        class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                    />
-                </div>
-                <select class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all">
-                    <option value="all">All Operators</option>
-                    <option value="zhangsan">张三</option>
-                    <option value="lisi">李四</option>
-                    <option value="wangwu">王五</option>
-                </select>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full">
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-800">
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Date"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Product ID"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Material Name"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Specification"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Outbound Qty"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Unit"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Operator"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Purpose"</th>
-                            <th class="text-center py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Actions"</th>
+                        <tr class="bg-slate-800/50">
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"出库日期"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"产品编号"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"物料名称"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">"出库数量"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"单位"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"备注"</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800">
-                        {move || {
-                            outbound_data.with(|data| {
-                                data.iter().map(|item| {
-                                    view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.outbound_date.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{item.product_id.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-red-400 text-right font-mono">{item.quantity}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.operator.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.purpose.clone()}</td>
-                                            <td class="py-3 px-4 text-center">
-                                                <div class="flex items-center justify-center gap-2">
-                                                    <button class="text-slate-400 hover:text-green-400 transition-colors">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                                    </button>
-                                                    <button class="text-slate-400 hover:text-red-400 transition-colors">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }).collect::<Vec<_>>()
-                            })
-                        }}
+                    <tbody class="divide-y divide-slate-800 bg-slate-950/20">
+                        {outbound_logs.into_iter().map(|log| {
+                            let product_name = log.name.clone().unwrap_or_else(|| "未知物料".to_string());
+
+                            view! {
+                                <tr class="hover:bg-slate-800/30 transition-colors group">
+                                    <td class="py-3 px-4 text-sm text-slate-400 font-mono">{log.date.unwrap_or_default()}</td>
+                                    <td class="py-3 px-4 text-sm font-mono text-red-400">{log.product_id}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-200 font-medium">{product_name}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-100 text-center font-bold font-mono">{log.quantity}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{log.unit.unwrap_or_else(|| "件".to_string())}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-500 italic">{log.remark.unwrap_or_else(|| "-".to_string())}</td>
+                                </tr>
+                            }
+                        }).collect::<Vec<_>>()}
                     </tbody>
                 </table>
             </div>
         </div>
     }
-}
-
-#[derive(Clone, Debug)]
-struct OutboundItem {
-    id: usize,
-    product_id: String,
-    material_name: String,
-    specification: String,
-    outbound_date: String,
-    quantity: i32,
-    unit: String,
-    operator: String,
-    purpose: String,
 }

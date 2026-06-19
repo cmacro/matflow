@@ -1,8 +1,10 @@
 use crate::components::{Aside, NavConfig, Topbar};
 use crate::pages::*;
 use leptos::prelude::*;
+use crate::data::mock::MockStore;
 
 use crate::utils::icons::*;
+
 
 struct PageRoute {
     page: Page,
@@ -26,6 +28,7 @@ pub enum Page {
 #[component]
 pub fn App() -> impl IntoView {
     let (current_page, set_current_page) = signal(Page::Overview);
+    let store = MockStore::new();
 
     let routes = vec![
         PageRoute {
@@ -97,11 +100,11 @@ pub fn App() -> impl IntoView {
                     {move || {
                         match current_page.get() {
                             Page::Overview => { view! { <OverviewPage/> }.into_any() }
-                            Page::Purchase => { view! { <PurchasePage/> }.into_any() }
-                            Page::Master => { view! { <MasterPage/> }.into_any() }
-                            Page::Inbound => { view! { <InboundPage/> }.into_any() }
-                            Page::Outbound => { view! { <OutboundPage/> }.into_any() }
-                            Page::Summary => { view! { <SummaryPage/> }.into_any() }
+                            Page::Purchase => { view! { <PurchasePage store=store.clone()/> }.into_any() }
+                            Page::Master => { view! { <MasterPage store=store.clone()/> }.into_any() }
+                            Page::Inbound => { view! { <InboundPage store=store.clone()/> }.into_any() }
+                            Page::Outbound => { view! { <OutboundPage store=store.clone()/> }.into_any() }
+                            Page::Summary => { view! { <SummaryPage store=store.clone()/> }.into_any() }
                             Page::Report => { view! { <ReportPage/> }.into_any() }
                             Page::Settings => { view! { <SettingsPage/> }.into_any() }
                             Page::System => { view! { <SystemPage/> }.into_any() }
@@ -111,4 +114,5 @@ pub fn App() -> impl IntoView {
             </div>
         </div>
     }
+
 }

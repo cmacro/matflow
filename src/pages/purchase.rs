@@ -1,142 +1,88 @@
+use crate::data::mock::MockStore;
+// use crate::models::PurchaseItem;
 use leptos::prelude::*;
 
 #[component]
-pub fn PurchasePage() -> impl IntoView {
-    // Mock data for purchase plan
-    let (purchase_data, _set_purchase_data) = signal(vec![
-        PurchaseItem {
-            id: 1,
-            product_id: "MAT-001".to_string(),
-            project_name: "客厅装修".to_string(),
-            material_name: "乳胶漆".to_string(),
-            specification: "10kg/桶".to_string(),
-            quantity: 50,
-            unit: "桶".to_string(),
-            estimated_cost: 2500.0,
-            status: "Pending".to_string(),
-        },
-        PurchaseItem {
-            id: 2,
-            product_id: "MAT-002".to_string(),
-            project_name: "卧室装修".to_string(),
-            material_name: "地板".to_string(),
-            specification: "1200x120mm".to_string(),
-            quantity: 100,
-            unit: "平方米".to_string(),
-            estimated_cost: 12000.0,
-            status: "Approved".to_string(),
-        },
-        PurchaseItem {
-            id: 3,
-            product_id: "MAT-003".to_string(),
-            project_name: "厨房装修".to_string(),
-            material_name: "瓷砖".to_string(),
-            specification: "600x600mm".to_string(),
-            quantity: 200,
-            unit: "平方米".to_string(),
-            estimated_cost: 18000.0,
-            status: "Pending".to_string(),
-        },
-    ]);
+pub fn PurchasePage(store: MockStore) -> impl IntoView {
+    let purchases = store.purchases;
 
     view! {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-200">"采购计划"</h2>
-                    <p class="text-sm text-slate-500">"Manage purchase orders and material requirements"</p>
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-semibold text-slate-200">"采购计划管理"</h2>
+                    <p class="text-sm text-slate-500">"展示来自 raw/采购表(范例).json 的实时数据"</p>
                 </div>
-                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    "Add New"
-                </button>
+                <div class="flex gap-3">
+                    <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        "导出清单"
+                    </button>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        "新增采购"
+                    </button>
+                </div>
             </div>
 
-            <div class="mb-4 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-3">
                 <div class="relative flex-1">
-                    <input 
-                        type="text" 
-                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                        placeholder="Search by Product ID, Project Name..."
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </span>
+                    <input
+                        type="text"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
+                        placeholder="搜索产品编号、项目名称、物料名称..."
                     />
                 </div>
                 <select class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all">
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="completed">Completed</option>
+                    <option value="all">所有项目</option>
+                    <option value="project1">青岛中巍白云山居</option>
+                    <option value="project2">象屿六叠中平</option>
                 </select>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full">
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-800">
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Product ID"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Project"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Material"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Spec"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Qty"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Unit"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Est. Cost"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Status"</th>
-                            <th class="text-center py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Actions"</th>
+                        <tr class="bg-slate-800/50">
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"序号"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"产品编号"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"项目名称"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"位置"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"物料名称"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"规格尺寸"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">"数量"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"单位"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">"单价"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"类别"</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800">
-                        {move || {
-                            purchase_data.with(|data| {
-                                data.iter().map(|item| {
-                                    view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.product_id.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.project_name.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300 text-right">{item.quantity}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300 text-right">{format!("¥{:.2}", item.estimated_cost)}</td>
-                                            <td class="py-3 px-4">
-                                                <span class=format!(
-                                                    "px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5 border {}",
-                                                    match item.status.as_str() {
-                                                        "Pending" => "bg-amber-500/10 border-amber-500/20 text-amber-400",
-                                                        "Approved" => "bg-green-500/10 border-green-500/20 text-green-400",
-                                                        "Completed" => "bg-blue-500/10 border-blue-500/20 text-blue-400",
-                                                        _ => "bg-slate-700/30 border-slate-600/30 text-slate-400",
-                                                    }
-                                                )>{item.status.clone()}</span>
-                                            </td>
-                                            <td class="py-3 px-4 text-center">
-                                                <div class="flex items-center justify-center gap-2">
-                                                    <button class="text-slate-400 hover:text-green-400 transition-colors">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                                    </button>
-                                                    <button class="text-slate-400 hover:text-red-400 transition-colors">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }).collect::<Vec<_>>()
-                            })
-                        }}</tbody>
+                    <tbody class="divide-y divide-slate-800 bg-slate-950/20">
+                        {purchases.into_iter().map(|item| {
+                            view! {
+                                <tr class="hover:bg-slate-800/30 transition-colors group">
+                                    <td class="py-3 px-4 text-sm text-slate-500">{item.id.unwrap_or(0)}</td>
+                                    <td class="py-3 px-4 text-sm font-mono text-green-400">{item.product_id}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300">{item.project_name.unwrap_or_default()}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{item.location.unwrap_or_default()}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-200 font-medium">{item.name}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{item.size.unwrap_or_default()}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{item.quantity.unwrap_or(0.0)}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{item.unit.unwrap_or_default()}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{format!("¥{:.2}", item.unit_price.unwrap_or(0.0))}</td>
+                                    <td class="py-3 px-4 text-sm">
+                                        <span class="px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-400 border border-slate-700">
+                                            {item.category.unwrap_or_else(|| "未分类".to_string())}
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }).collect::<Vec<_>>()}
+                    </tbody>
                 </table>
             </div>
         </div>
     }
-}
-
-#[derive(Clone, Debug)]
-struct PurchaseItem {
-    id: usize,
-    product_id: String,
-    project_name: String,
-    material_name: String,
-    specification: String,
-    quantity: i32,
-    unit: String,
-    estimated_cost: f64,
-    status: String,
 }

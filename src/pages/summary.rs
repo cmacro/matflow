@@ -1,181 +1,89 @@
+use crate::data::mock::MockStore;
 use leptos::prelude::*;
 
 #[component]
-pub fn SummaryPage() -> impl IntoView {
-    // Mock data for inventory summary
-    let (summary_data, _set_summary_data) = signal(vec![
-        SummaryItem {
-            id: 1,
-            product_id: "MAT-001".to_string(),
-            material_name: "乳胶漆".to_string(),
-            specification: "10kg/桶".to_string(),
-            category: "涂料".to_string(),
-            unit: "桶".to_string(),
-            total_inbound: 70,
-            total_outbound: 20,
-            remaining: 50,
-            last_updated: "2024-01-22".to_string(),
-        },
-        SummaryItem {
-            id: 2,
-            product_id: "MAT-002".to_string(),
-            material_name: "地板".to_string(),
-            specification: "1200x120mm".to_string(),
-            category: "地面材料".to_string(),
-            unit: "平方米".to_string(),
-            total_inbound: 150,
-            total_outbound: 30,
-            remaining: 120,
-            last_updated: "2024-01-20".to_string(),
-        },
-        SummaryItem {
-            id: 3,
-            product_id: "MAT-003".to_string(),
-            material_name: "瓷砖".to_string(),
-            specification: "600x600mm".to_string(),
-            category: "墙面材料".to_string(),
-            unit: "平方米".to_string(),
-            total_inbound: 300,
-            total_outbound: 25,
-            remaining: 275,
-            last_updated: "2024-01-22".to_string(),
-        },
-    ]);
+pub fn SummaryPage(store: MockStore) -> impl IntoView {
+    let summary_data = store.summary;
 
     view! {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-200">"库存汇总"</h2>
-                    <p class="text-sm text-slate-500">"Real-time inventory overview with inbound/outbound aggregation"</p>
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-semibold text-slate-200">"库存实时汇总"</h2>
+                    <p class="text-sm text-slate-500">"实时结存统计：基于入出库流水的自动聚合结果"</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button class="bg-green-600/20 hover:bg-green-600/30 text-green-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        "Export CSV"
-                    </button>
-                    <button class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        "Refresh"
+                <div class="flex gap-3">
+                    <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        "导出库存报表"
                     </button>
                 </div>
             </div>
 
-            <div class="mb-4 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-3">
                 <div class="relative flex-1">
-                    <input 
-                        type="text" 
-                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                        placeholder="Search by Product ID, Material Name..."
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </span>
+                    <input
+                        type="text"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                        placeholder="搜索产品编号、名称..."
                     />
                 </div>
-                <select class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all">
-                    <option value="all">All Categories</option>
-                    <option value="paint">涂料</option>
-                    <option value="floor">地面材料</option>
-                    <option value="wall">墙面材料</option>
-                </select>
-                <select class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all">
-                    <option value="all">All Status</option>
-                    <option value="critical">Critical (Low Stock)</option>
-                    <option value="normal">Normal</option>
-                </select>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full">
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-800">&
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Product ID"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Material Name"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Specification"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Category"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Unit"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Inbound"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Outbound"</th>
-                            <th class="text-right py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Remaining"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Status"</th>
-                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"Last Updated"</th>
+                        <tr class="bg-slate-800/50">
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"产品编号"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"产品名称"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">"规格型号"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">"累计入库"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">"累计出库"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-right">"期末结存"</th>
+                            <th class="py-3 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">"状态"</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800">
-                        {move || {
-                            summary_data.with(|data| {
-                                data.iter().map(|item| {
-                                    let stock_status = if item.remaining <= 10 {
-                                        "Low Stock"
-                                    } else if item.remaining <= 30 {
-                                        "Warning"
-                                    } else {
-                                        "Normal"
-                                    };
-                                    
-                                    // let status_class = match stock_status {
-                                    //     "Low Stock" => "text-red-400",
-                                    //     "Warning" => "text-amber-400",
-                                    //     _ => "text-green-400",
-                                    // };
+                    <tbody class="divide-y divide-slate-800 bg-slate-950/20">
+                        {summary_data.into_iter().map(|item| {
+                            let is_low_stock = item.stock < 1.0;
+                            let calc_stock = item.total_in - item.total_out;
+                            let is_verified = (calc_stock - item.stock).abs() < 0.001;
 
-                                    view! {
-                                        <tr class="hover:bg-slate-800/30 transition-colors" id={item.id}>
-                                            <td class="py-3 px-4 text-sm text-green-400 font-mono">{item.product_id.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.material_name.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.specification.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-300">{item.category.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.unit.clone()}</td>
-                                            <td class="py-3 px-4 text-sm text-green-400 text-right font-mono">{item.total_inbound}</td>
-                                            <td class="py-3 px-4 text-sm text-red-400 text-right font-mono">{item.total_outbound}</td>
-                                            <td class="py-3 px-4 text-sm text-slate-200 text-right font-mono">{item.remaining}</td>
-                                            <td class="py-3 px-4">
-                                                <span class=format!(
-                                                    "inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border {}",
-                                                    match stock_status {
-                                                        "Low Stock" => "bg-red-500/10 border-red-500/20 text-red-400",
-                                                        "Warning" => "bg-amber-500/10 border-amber-500/20 text-amber-400",
-                                                        _ => "bg-green-500/10 border-green-500/20 text-green-400",
-                                                    }
-                                                )>{stock_status}</span>
-                                            </td>
-                                            <td class="py-3 px-4 text-sm text-slate-400">{item.last_updated.clone()}</td>
-                                        </tr>
-                                    }
-                                }).collect::<Vec<_>>()
-                            })
-                        }}
+                            view! {
+                                <tr class="hover:bg-slate-800/30 transition-colors group">
+                                    <td class="py-3 px-4 text-sm font-mono text-blue-400">{item.product_id}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-200 font-medium">{item.name}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{item.spec.unwrap_or_else(|| "-".to_string())}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{item.total_in}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{item.total_out}</td>
+                                    <td class="py-3 px-4 text-sm font-bold text-right font-mono text-slate-100">
+                                        {item.stock}
+                                    </td>
+                                    <td class="py-3 px-4 text-center">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <span class=format!(
+                                                "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border {}",
+                                                if is_low_stock { "bg-red-500/10 border-red-500/20 text-red-400" } else { "bg-green-500/10 border-green-500/20 text-green-400" }
+                                            )>
+                                                {if is_low_stock { "缺货" } else { "充足" }}
+                                            </span>
+                                            <span class=format!(
+                                                "px-1.5 py-0.5 rounded-full text-[10px] font-bold border {}",
+                                                if is_verified { "bg-blue-500/10 border-blue-500/20 text-blue-400" } else { "bg-amber-500/10 border-amber-500/20 text-amber-400" }
+                                            )>
+                                                {if is_verified { "✓ 验证" } else { "⚠ 差异" }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }).collect::<Vec<_>>()}
                     </tbody>
                 </table>
             </div>
-
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
-                    <div class="text-slate-500 text-xs uppercase tracking-wider mb-1">"Total Items"</div>
-                    <div class="text-2xl font-bold text-slate-200">{move || summary_data.with(|data| data.len())}</div>
-                </div>
-                <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
-                    <div class="text-slate-500 text-xs uppercase tracking-wider mb-1">"Total Inbound"</div>
-                    <div class="text-2xl font-bold text-green-500">{move || summary_data.with(|data| data.iter().map(|i| i.total_inbound).sum::<i32>())}</div>
-                </div>
-                <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
-                    <div class="text-slate-500 text-xs uppercase tracking-wider mb-1">"Total Outbound"</div>
-                    <div class="text-2xl font-bold text-red-500">{move || summary_data.with(|data| data.iter().map(|i| i.total_outbound).sum::<i32>())}</div>
-                </div>
-                <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-4">
-                    <div class="text-slate-500 text-xs uppercase tracking-wider mb-1">"Total Remaining"</div>
-                    <div class="text-2xl font-bold text-slate-200">{move || summary_data.with(|data| data.iter().map(|i| i.remaining).sum::<i32>())}</div>
-                </div>
-            </div>
         </div>
     }
-}
-
-#[derive(Clone, Debug)]
-struct SummaryItem {
-    id: usize,
-    product_id: String,
-    material_name: String,
-    specification: String,
-    category: String,
-    unit: String,
-    total_inbound: i32,
-    total_outbound: i32,
-    remaining: i32,
-    last_updated: String,
 }

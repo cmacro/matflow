@@ -9,6 +9,10 @@ all: dev
 # 1. 开发与调试 (Development)
 # -----------------------------------------------------------------------------
 
+# 快速检查代码正确性 (无编译)
+check:
+	cargo check
+
 # 启动 Tauri 开发模式 (包含 Trunk serve)
 dev:
 	cargo tauri dev
@@ -69,6 +73,7 @@ reset: kill-port clean
 
 help:
 	@echo "MatFlow 开发者快捷指令集:"
+	@echo "  make check       - 快速检查代码编译正确性"
 	@echo "  make dev          - 启动 Tauri 全量开发环境 (推荐)"
 	@echo "  make dev-frontend - 仅启动 Trunk 前端服务"
 	@echo "  make build        - 编译发布版本"
