@@ -48,13 +48,14 @@ pub fn OutboundPage(store: MockStore) -> impl IntoView {
                     <tbody class="divide-y divide-slate-800 bg-slate-950/20">
                         {outbound_logs.into_iter().map(|log| {
                             let product_name = log.name.clone().unwrap_or_else(|| "未知物料".to_string());
+                            let qty = log.get_quantity();
 
                             view! {
                                 <tr class="hover:bg-slate-800/30 transition-colors group">
                                     <td class="py-3 px-4 text-sm text-slate-400 font-mono">{log.date.unwrap_or_default()}</td>
                                     <td class="py-3 px-4 text-sm font-mono text-red-400">{log.product_id}</td>
                                     <td class="py-3 px-4 text-sm text-slate-200 font-medium">{product_name}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-100 text-center font-bold font-mono">{log.quantity}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-100 text-center font-bold font-mono">{qty}</td>
                                     <td class="py-3 px-4 text-sm text-slate-400">{log.unit.unwrap_or_else(|| "件".to_string())}</td>
                                     <td class="py-3 px-4 text-sm text-slate-500 italic">{log.remark.unwrap_or_else(|| "-".to_string())}</td>
                                 </tr>

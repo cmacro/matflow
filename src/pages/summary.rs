@@ -48,19 +48,25 @@ pub fn SummaryPage(store: MockStore) -> impl IntoView {
                     </thead>
                     <tbody class="divide-y divide-slate-800 bg-slate-950/20">
                         {summary_data.into_iter().map(|item| {
-                            let is_low_stock = item.stock < 1.0;
-                            let calc_stock = item.total_in - item.total_out;
-                            let is_verified = (calc_stock - item.stock).abs() < 0.001;
+                            let stock_val = item.stock_f64();
+                            let is_low_stock = stock_val < 1.0;
+                            let total_in_val = item.total_in_f64();
+                            let total_out_val = item.total_out_f64();
+                            let calc_stock = total_in_val - total_out_val;
+                            let is_verified = (calc_stock - stock_val).abs() < 0.001;
+                            let product_id = item.product_id.clone();
+                            let name = item.name.clone();
+                            let spec = item.spec.as_ref().map(|s| s.clone()).unwrap_or_else(|| "-".to_string());
 
                             view! {
                                 <tr class="hover:bg-slate-800/30 transition-colors group">
-                                    <td class="py-3 px-4 text-sm font-mono text-blue-400">{item.product_id}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-200 font-medium">{item.name}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-400">{item.spec.unwrap_or_else(|| "-".to_string())}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{item.total_in}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{item.total_out}</td>
+                                    <td class="py-3 px-4 text-sm font-mono text-blue-400">{product_id}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-200 font-medium">{name}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-400">{spec}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{total_in_val}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-center font-mono">{total_out_val}</td>
                                     <td class="py-3 px-4 text-sm font-bold text-right font-mono text-slate-100">
-                                        {item.stock}
+                                        {stock_val}
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         <div class="flex items-center justify-center gap-2">

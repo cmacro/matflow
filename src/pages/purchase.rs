@@ -1,17 +1,27 @@
 use crate::data::mock::MockStore;
-// use crate::models::PurchaseItem;
+use crate::models::PurchaseItem;
 use leptos::prelude::*;
 
 #[component]
 pub fn PurchasePage(store: MockStore) -> impl IntoView {
     let purchases = store.purchases;
 
+    // 打印数据到浏览器控制台
+    web_sys::console::log_1(&format!("Purchases count: {}", purchases.len()).into());
+    web_sys::console::log_1(
+        &format!(
+            "First item ID: {:?}",
+            purchases.get(0).map(|i| &i.product_id)
+        )
+        .into(),
+    );
+
     view! {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex flex-col">
                     <h2 class="text-xl font-semibold text-slate-200">"采购计划管理"</h2>
-                    <p class="text-sm text-slate-500">"展示来自 raw/采购表(范例).json 的实时数据"</p>
+                    <p class="text-sm text-slate-500">"数据量: " {purchases.len()} " 条记录"</p>
                 </div>
                 <div class="flex gap-3">
                     <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-slate-700">
@@ -69,9 +79,9 @@ pub fn PurchasePage(store: MockStore) -> impl IntoView {
                                     <td class="py-3 px-4 text-sm text-slate-400">{item.location.unwrap_or_default()}</td>
                                     <td class="py-3 px-4 text-sm text-slate-200 font-medium">{item.name}</td>
                                     <td class="py-3 px-4 text-sm text-slate-400">{item.size.unwrap_or_default()}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{item.quantity.unwrap_or(0.0)}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{PurchaseItem::parse_f64(&item.quantity)}</td>
                                     <td class="py-3 px-4 text-sm text-slate-400">{item.unit.unwrap_or_default()}</td>
-                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{format!("¥{:.2}", item.unit_price.unwrap_or(0.0))}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-300 text-right font-mono">{format!("¥{:.2}", PurchaseItem::parse_f64(&item.unit_price))}</td>
                                     <td class="py-3 px-4 text-sm">
                                         <span class="px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-400 border border-slate-700">
                                             {item.category.unwrap_or_else(|| "未分类".to_string())}

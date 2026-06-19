@@ -18,16 +18,57 @@ impl MockStore {
         let outbound_json = include_str!("../../raw/出库表格.json");
         let summary_json = include_str!("../../raw/库存汇总.json");
 
-        Self {
-            purchases: serde_json::from_str(purchases_json).expect("Failed to parse purchases"),
-            products: serde_json::from_str(products_json).expect("Failed to parse products"),
-            inbound: serde_json::from_str(inbound_json).expect("Failed to parse inbound"),
-            outbound: serde_json::from_str(outbound_json).expect("Failed to parse outbound"),
-            summary: serde_json::from_str(summary_json).expect("Failed to parse summary"),
-        }
-    }
+        let purchases = serde_json::from_str::<Vec<PurchaseItem>>(purchases_json)
+            .unwrap_or_else(|e| {
+                web_sys::console::error_1(&format!("Purchase JSON Parse Error: {}", e).into());
+                Vec::new()
+            })
+            .into_iter()
+            .filter(|item| !item.name.is_empty())
+            .collect();
 
-    pub fn get_product_by_id(&self, id: &str) -> Option<&ProductInfo> {
-        self.products.iter().find(|p| p.product_id == id)
+        let products = serde_json::from_str::<Vec<ProductInfo>>(products_json)
+            .unwrap_or_else(|e| {
+                web_sys::console::error_1(&format!("Products JSON Parse Error: {}", e).into());
+                Vec::new()
+            })
+            .into_iter()
+            .filter(|item| !item.name.is_empty())
+            .collect();
+
+        let inbound = serde_json::from_str::<Vec<StockLog>>(inbound_json)
+            .unwrap_or_else(|e| {
+                web_sys::console::error_1(&format!("Inbound JSON Parse Error: {}", e).into());
+                Vec::new()
+            })
+            .into_iter()
+            .filter(|item| !item.product_id.is_empty())
+            .collect();
+
+        let outbound = serde_json::from_str::<Vec<StockLog>>(outbound_json)
+            .unwrap_or_else(|e| {
+                web_sys::console::error_1(&format!("Outbound JSON Parse Error: {}", e).into());
+                Vec::new()
+            })
+            .into_iter()
+            .filter(|item| !item.product_id.is_empty())
+            .collect();
+
+        let summary = serde_json::from_str::<Vec<InventorySummary>>(summary_json)
+            .unwrap_or_else(|e| {
+                web_sys::console::error_1(&format!("Summary JSON Parse Error: {}", e).into());
+                Vec::new()
+            })
+            .into_iter()
+            .filter(|item| !item.product_id.is_empty())
+            .collect();
+
+        Self {
+            purchases,
+            products,
+            inbound,
+            outbound,
+            summary,
+        }
     }
 }
