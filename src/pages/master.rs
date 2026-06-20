@@ -1,9 +1,31 @@
 use leptos::prelude::*;
 use crate::data::mock::MockStore;
+use crate::components::{StatGrid, StatItem};
 
 #[component]
 pub fn MasterPage(store: MockStore) -> impl IntoView {
     let products = store.products;
+
+    let stats = vec![
+        StatItem {
+            label: "物料总数".to_string(),
+            value: format!("{} 项", products.len()),
+            icon_svg: r#"<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>"#.to_string(),
+            color_class: "bg-blue-500/10 text-blue-400".to_string(),
+        },
+        StatItem {
+            label: "覆盖项目".to_string(),
+            value: "3 个".to_string(),
+            icon_svg: r#"<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 9.73"/><path d="M12 12 21 21"/><path d="m4.5 16.27 9-9.73"/><path d="M3 12h18"/></svg>"#.to_string(),
+            color_class: "bg-purple-500/10 text-purple-400".to_string(),
+        },
+        StatItem {
+            label: "数据状态".to_string(),
+            value: "同步中".to_string(),
+            icon_svg: r#"<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>"#.to_string(),
+            color_class: "bg-amber-500/10 text-amber-400".to_string(),
+        },
+    ];
 
     view! {
         <div class="bg-slate-900/30 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-xl">
@@ -20,35 +42,7 @@ pub fn MasterPage(store: MockStore) -> impl IntoView {
                 </div>
             </div >
 
-            <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-slate-950/50 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
-                    <div class="p-3 bg-blue-500/10 rounded-lg text-blue-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                    </div>
-                    <div>
-                        <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">"物料总数"</div>
-                        <div class="text-2xl font-bold text-slate-200">{products.len()} " 项"</div>
-                    </div>
-                </div>
-                <div class="bg-slate-950/50 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
-                    <div class="p-3 bg-purple-500/10 rounded-lg text-purple-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 9.73"/><path d="M12 12 21 21"/><path d="m4.5 16.27 9-9.73"/><path d="M3 12h18"/></svg>
-                    </div>
-                    <div>
-                        <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">"覆盖项目"</div>
-                        <div class="text-2xl font-bold text-slate-200">"3" " 个"</div>
-                    </div>
-                </div>
-                <div class="bg-slate-950/50 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
-                    <div class="p-3 bg-amber-500/10 rounded-lg text-amber-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <div>
-                        <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">"数据状态"</div>
-                        <div class="text-2xl font-bold text-slate-200">"同步中"</div>
-                    </div>
-                </div>
-            </div>
+            <StatGrid items=stats />
 
             <div class="overflow-x-auto rounded-xl border border-slate-800">
                 <table class="w-full text-left border-collapse">
