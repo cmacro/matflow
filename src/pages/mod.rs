@@ -8,6 +8,7 @@ pub mod summary;
 pub mod report;
 pub mod settings;
 pub mod system;
+pub mod login;
 
 pub use overview::OverviewPage;
 pub use purchase::PurchasePage;
@@ -18,3 +19,4 @@ pub use summary::SummaryPage;
 pub use report::ReportPage;
 pub use settings::SettingsPage;
 pub use system::SystemPage;
+pub use login::LoginPage;

@@ -1,6 +1,7 @@
 use crate::components::{Alignment, ColumnDef, DataGrid};
 use crate::data::mock::MockStore;
 use crate::models::PurchaseItem;
+use leptos::portal::Portal;
 use leptos::prelude::*;
 use std::sync::Arc;
 
@@ -144,70 +145,72 @@ pub fn PurchasePage(store: MockStore) -> impl IntoView {
             </div>
 
             <Show when=move || show_import.get()>
-                <div
-                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-                    on:click=move |_| set_show_import.set(false)
-                >
+                <Portal>
                     <div
-                        class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
-                        on:click=move |ev| ev.stop_propagation()
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                        on:click=move |_| set_show_import.set(false)
                     >
-                        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-                            <div class="flex items-center gap-3">
-                                <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <div
+                            class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+                            on:click=move |ev| ev.stop_propagation()
+                        >
+                            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-slate-200">"导入采购数据"</h3>
                                 </div>
-                                <h3 class="text-lg font-semibold text-slate-200">"导入采购数据"</h3>
+                                <button
+                                    on:click=move |_| set_show_import.set(false)
+                                    class="text-slate-500 hover:text-slate-200 transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
                             </div>
-                            <button
-                                on:click=move |_| set_show_import.set(false)
-                                class="text-slate-500 hover:text-slate-200 transition-colors"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                            </button>
-                        </div>
 
-                        <div class="px-6 py-5 space-y-5">
-                            <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
-                                <div class="flex justify-center mb-3 text-slate-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <div class="px-6 py-5 space-y-5">
+                                <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
+                                    <div class="flex justify-center mb-3 text-slate-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    </div>
+                                    <p class="text-sm text-slate-300 mb-1">"点击选择文件或拖拽到此处"</p>
+                                    <p class="text-xs text-slate-500">"支持 Excel (.xlsx) 和 JSON 格式"</p>
                                 </div>
-                                <p class="text-sm text-slate-300 mb-1">"点击选择文件或拖拽到此处"</p>
-                                <p class="text-xs text-slate-500">"支持 Excel (.xlsx) 和 JSON 格式"</p>
+
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                                        <input type="checkbox" class="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50" checked />
+                                        "遇重复编号时跳过"
+                                    </label>
+                                    <label class="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                                        <input type="checkbox" class="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50" />
+                                        "导入后自动同步至物料主库"
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class="space-y-3">
-                                <label class="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
-                                    <input type="checkbox" class="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50" checked />
-                                    "遇重复编号时跳过"
-                                </label>
-                                <label class="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
-                                    <input type="checkbox" class="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50" />
-                                    "导入后自动同步至物料主库"
-                                </label>
+                            <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-950/30">
+                                <button
+                                    on:click=move |_| set_show_import.set(false)
+                                    class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors border border-slate-700"
+                                >
+                                    "取消"
+                                </button>
+                                <button
+                                    on:click=move |_| {
+                                        web_sys::console::log_1(&"Demo: import triggered".into());
+                                        set_show_import.set(false);
+                                    }
+                                    class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    "开始导入"
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-950/30">
-                            <button
-                                on:click=move |_| set_show_import.set(false)
-                                class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors border border-slate-700"
-                            >
-                                "取消"
-                            </button>
-                            <button
-                                on:click=move |_| {
-                                    web_sys::console::log_1(&"Demo: import triggered".into());
-                                    set_show_import.set(false);
-                                }
-                                class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-2"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                "开始导入"
-                            </button>
                         </div>
                     </div>
-                </div>
+                </Portal>
             </Show>
         </div>
     }

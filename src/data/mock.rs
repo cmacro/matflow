@@ -10,6 +10,7 @@ pub struct MockStore {
     pub summary: Vec<InventorySummary>,
 }
 
+
 impl MockStore {
     pub fn new() -> Self {
         let purchases_json = include_str!("../../raw/采购表(范例).json");
